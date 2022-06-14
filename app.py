@@ -1,10 +1,10 @@
 from flask import Flask
-#from flask_cors import CORS, cross_origin
+from flask_cors import CORS, cross_origin
 import logging as logger
 logger.basicConfig(level="DEBUG")
 
 app = Flask(__name__)
-#CORS(app)
+CORS(app)
 
 if __name__ == '__main__':
     logger.debug("Starting the application")
