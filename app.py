@@ -8,5 +8,5 @@ CORS(app)
 
 if __name__ == '__main__':
     logger.debug("Starting the application")
-    from api import *
+    from controller import *
     app.run(host="127.0.0.1", port=5000, debug=True, use_reloader=True)
