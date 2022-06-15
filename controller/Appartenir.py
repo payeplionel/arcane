@@ -55,23 +55,23 @@ class Appartenir(Resource):
             return jsonify('Vous n\'avez pas le droit de modifier ce bien')
 
 
-def proprietaire_by_bien(idP, idM):
+def proprietaire_by_bien(id_proprietaire, id_immobilier):
     """
     Vérification si un bien appartient à un proprietaire
-    :param idP: identifiant du proprietaire
-    :param idM: identifiant de l'immobilier
+    :param id_proprietaire: identifiant du proprietaire
+    :param id_immobilier: identifiant de l'immobilier
     :return: un dictionnaire avec les informations du bien
     """
     try:
         connection = mysql.connect()
         cursor = connection.cursor()
         sqlQuery = 'SELECT * FROM Appartenir a where a.immobilierID = %s and a.proprietaireID = %s'
-        data = (idP, idM)
+        data = (id_immobilier, id_proprietaire)
         cursor.execute(sqlQuery, data)
         rows = cursor.fetchone()
         if rows is not None:
             sqlQuery = 'SELECT * FROM Immobilier i where i.immobilierID = %s'
-            data = idM
+            data = id_immobilier
             cursor.execute(sqlQuery, data)
             rows = cursor.fetchone()
             return {"nom": rows.__getitem__(1), "ville": rows.__getitem__(2), "description": rows.__getitem__(3),
@@ -83,3 +83,21 @@ def proprietaire_by_bien(idP, idM):
     finally:
         cursor.close()
         connection.close()
+
+
+def appartenance(id_immobilier, id_proprietaire):
+    """
+    Liaison entre un bien immobilier et un proprietaire
+    :param id_immobilier: identifiant du bien immobilier
+    :param id_proprietaire: identifiant du proprietaire
+    """
+    logger.debug("Creation d'un proprietaire")
+    try:
+        connection = mysql.connect()
+        cursor = connection.cursor()
+        sqlQuery = 'INSERT INTO Appartenir (immobilierID, proprietaireID) VALUES(%s, %s)'
+        data = (id_immobilier, id_proprietaire)
+        cursor.execute(sqlQuery, data)
+        connection.commit()
+    except Exception as e:
+        print(e)
